@@ -8,6 +8,7 @@
 import { config as parseEnv } from "dotenv";
 import DiscordBot from "./bot/index.js";
 import chalk from "chalk";
+import knex from "knex";
 
 // Enum
 export const LogLevel = {
@@ -23,6 +24,17 @@ export const LogLevel = {
 // Class
 const NECos = class NECos {
   environment = parseEnv().parsed || {};
+  database = knex({
+    client: this.environment.DB_CONNECTION,
+    connection: {
+      host: this.environment.DB_HOST,
+      port: parseInt(this.environment.DB_PORT),
+      database: this.environment.DB_DATABASE,
+      user: this.environment.DB_USERNAME,
+      password: this.environment.DB_PASSWORD
+    }
+  });
+
   log = (level: string, ...output: string[]) => {
     if (level == LogLevel.DEBUG && this.environment.APP_DEBUG != "true") return;
     console.log(level, ...output);
@@ -42,10 +54,11 @@ const NECos = class NECos {
       this.log(LogLevel.CRITICAL, `Failed to destroy discord bot client.`);
     }
 
-    return true;
+    process.exit(1)
   };
 
   constructor() {
+    this.database.migrate.latest();
     this.environment.APP_DEVELOPERS = JSON.parse(this.environment.APP_DEVELOPERS)
     //process.on('exit', this.destroy);
     process.on("SIGINT", this.destroy);

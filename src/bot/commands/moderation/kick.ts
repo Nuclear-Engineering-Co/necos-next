@@ -4,7 +4,6 @@ import {
   ChatInputCommandInteraction,
   EmbedBuilder,
   Colors,
-  APIApplicationCommandOptionChoice,
 } from "discord.js";
 import { SlashCommandStringOption, SlashCommandUserOption } from "@discordjs/builders";
 
