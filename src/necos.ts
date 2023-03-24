@@ -24,6 +24,8 @@ export const LogLevel = {
 // Class
 const NECos = class NECos {
   environment = parseEnv().parsed || {};
+  start_time = (Date.now() / 1000).toFixed(0);
+
   database = knex({
     client: this.environment.DB_CONNECTION,
     connection: {
@@ -31,8 +33,13 @@ const NECos = class NECos {
       port: parseInt(this.environment.DB_PORT),
       database: this.environment.DB_DATABASE,
       user: this.environment.DB_USERNAME,
-      password: this.environment.DB_PASSWORD
-    }
+      password: this.environment.DB_PASSWORD,
+
+      pool: {
+        min: 1,
+        max: 2,
+      },
+    },
   });
 
   log = (level: string, ...output: string[]) => {
@@ -54,12 +61,14 @@ const NECos = class NECos {
       this.log(LogLevel.CRITICAL, `Failed to destroy discord bot client.`);
     }
 
-    process.exit(1)
+    process.exit(1);
   };
 
   constructor() {
     this.database.migrate.latest();
-    this.environment.APP_DEVELOPERS = JSON.parse(this.environment.APP_DEVELOPERS)
+    this.environment.APP_DEVELOPERS = JSON.parse(
+      this.environment.APP_DEVELOPERS
+    );
     //process.on('exit', this.destroy);
     process.on("SIGINT", this.destroy);
   }

@@ -4,29 +4,32 @@ import {
   SlashCommandSubcommandBuilder,
 } from "@discordjs/builders";
 
-import { ChatInputCommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, PermissionsBitField } from "discord.js";
+import { Knex } from "knex";
 
 export default abstract class BaseCommand {
   bot: Bot;
   NECos: NECos;
+  database: Knex;
 
   name: string = "";
   description: string = "";
-  defaultMemberPermissions: undefined | null | string | number | bigint = null;
+  defaultMemberPermissions?: undefined | null | string | number | bigint =
+    undefined;
 
   options: Array<ApplicationCommandOptionBase> = [];
-  subcommands: Array<SlashCommandSubcommandBuilder> = [];
+  subcommands: Array<BaseCommand> = [];
 
-  cooldown: number | null = null;
-  developer: boolean | null = null;
+  cooldown?: number = undefined;
+  developer?: boolean = undefined;
 
   constructor(NECos: NECos) {
     this.NECos = NECos;
     this.bot = NECos.bot;
+    this.database = NECos.database;
   }
 
   onCommand = async (
-    bot: Bot,
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<any> => {
     throw new Error("Method not implemented.");

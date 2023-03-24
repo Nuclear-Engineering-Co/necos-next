@@ -9,6 +9,7 @@ export default async (
   await interaction.deferReply();
 
   const commandName = interaction.commandName;
+  const subcommandName = interaction.options.getSubcommand(false);
 
   let command: BaseCommand | undefined = undefined;
 
@@ -33,11 +34,25 @@ export default async (
           )
           .setColor(Colors.Red)
           .setFooter({ text: bot.environment.APP_NAME })
-          .setTimestamp()
+          .setTimestamp(),
       ],
     });
 
-  if (command.developer && !bot.environment.APP_DEVELOPERS.includes(interaction.member.id)) {
+  if (subcommandName) {
+    const subcommand = command.subcommands.find(
+      (com) => com.name === subcommandName
+    );
+    if (!subcommand) return;
+
+    subcommand.defaultMemberPermissions = command.defaultMemberPermissions;
+
+    command = subcommand;
+  }
+
+  if (
+    command.developer &&
+    !bot.environment.APP_DEVELOPERS.includes(interaction.member.id)
+  ) {
     return interaction.editReply({
       embeds: [
         new EmbedBuilder()
@@ -47,10 +62,25 @@ export default async (
           )
           .setColor(Colors.Red)
           .setFooter({ text: bot.environment.APP_NAME })
-          .setTimestamp()
+          .setTimestamp(),
       ],
     });
   }
 
-  command.onCommand(bot, interaction);
+  try {
+    await command.onCommand(interaction);
+  } catch (error) {
+    interaction.editReply({
+      embeds: [
+        new EmbedBuilder()
+          .setTitle("Command Execution failed")
+          .setDescription(
+            `An error occurred whilst executing command ${commandName}. ${error}`
+          )
+          .setColor(Colors.Red)
+          .setFooter({ text: bot.environment.APP_NAME })
+          .setTimestamp(),
+      ],
+    });
+  }
 };

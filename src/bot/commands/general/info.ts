@@ -29,43 +29,46 @@ export default class InfoCommand extends BaseCommand {
   ];
 
   onCommand = async (
-    bot: Bot,
     interaction: ChatInputCommandInteraction<"cached">
   ): Promise<any> => {
-    const commands = bot.commands;
+    const commands = this.bot.commands;
     const categoryName = interaction.options.getString("category", false);
 
     const infoEmbed = new EmbedBuilder()
-      .setTitle(`${bot.environment.APP_NAME} Information`)
-      .setDescription(`${bot.environment.APP_NAME} is ${bot.environment.APP_PUBLISHER}'s all-in-one moderation & data management endpoint.`)
+      .setTitle(`${this.bot.environment.APP_NAME} Information`)
+      .setDescription(
+        `${this.bot.environment.APP_NAME} is ${this.bot.environment.APP_PUBLISHER}'s all-in-one moderation & data management endpoint.`
+      )
       .setColor(Colors.Green)
-      .setFooter({ text: bot.environment.APP_NAME })
-      .setTimestamp()
+      .setFooter({ text: this.bot.environment.APP_NAME })
+      .setTimestamp();
 
     if (categoryName) {
       const category = commands.get(categoryName);
-      
+
       if (category && category.size > 0) {
         infoEmbed.addFields([
           {
             name: "Commands",
-            value: `• ${Array.from(category.keys()).join("\n• ")}`
-          }
-        ])
+            value: `• ${Array.from(category.keys()).join("\n• ")}`,
+          },
+        ]);
       } else {
-        infoEmbed.setDescription(`No category was found matching the name ${categoryName}.`)
+        infoEmbed.setDescription(
+          `No category was found matching the name ${categoryName}.`
+        );
       }
     } else {
       infoEmbed.addFields([
         {
           name: "Command Categories",
-          value: `• ${Array.from(commands.keys()).join("\n• ")}`
-        }
-      ])
+          value: `• ${Array.from(commands.keys()).join("\n• ")}`,
+        },
+      ]);
     }
 
     interaction.editReply({
-      embeds: [infoEmbed]
-    })
+      embeds: [infoEmbed],
+    });
   };
 }

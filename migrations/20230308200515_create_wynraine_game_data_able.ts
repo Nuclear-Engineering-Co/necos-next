@@ -2,6 +2,11 @@ import { Knex } from "knex";
 
 
 export async function up(knex: Knex): Promise<void> {
+  knex.schema
+    .createTable('game_data', (table) => {
+      table.string('id').notNullable().unique();
+      
+    })
 }
 
 
