@@ -1,0 +1,22 @@
+#!/bin/bash
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+PACKAGE_VERSION=$(cat "$SCRIPT_DIR/../../package.json" \
+  | grep version \
+  | head -1 \
+  | awk -F: '{ print $2 }' \
+  | sed 's/[",]//g')
+
+echo "NECos Package Version$PACKAGE_VERSION" 
+echo "NECos Local Repository Version" `git rev-parse HEAD | cut -c1-7`
+echo ""
+echo "Usage: ./necos [command] [OPTIONS]"
+echo "Options:"
+echo "  -H | --help | --usage | --version  Shows the usage prompt"
+echo "  -D | --debug                       Enabled debugging mode"
+echo "  --dev                              Sets NODE_ENV to development"
+echo "  --ci                               Sets NODE_ENV to ci"
+echo ""
+echo "Commands:"
+echo "  usage  Shows the NECos CLI usage information"
+echo "  build  Transpiles all TypeScript files in to JavaScript for production use"
+echo "  start  Starts the NECos Application"

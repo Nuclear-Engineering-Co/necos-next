@@ -1,0 +1,2 @@
+#!/bin/bash
+source ./cli/cli.sh
