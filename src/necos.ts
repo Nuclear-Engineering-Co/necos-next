@@ -7,6 +7,7 @@
 // Imports
 import { config as parseEnv } from "dotenv";
 import DiscordBot from "./bot/index.js";
+import API from "./api/index.js";
 import chalk from "chalk";
 import knex from "knex";
 
@@ -48,6 +49,7 @@ const NECos = class NECos {
   };
 
   bot = new DiscordBot(this);
+  api = new API(this);
 
   destroyed = false;
   destroy = async () => {
@@ -78,4 +80,5 @@ const NECos = class NECos {
 const Instance = new NECos();
 export type NECos = typeof Instance;
 export type Bot = typeof Instance.bot;
+export type API = typeof Instance.api;
 export default Instance;

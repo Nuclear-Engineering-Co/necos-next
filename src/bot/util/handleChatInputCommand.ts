@@ -70,6 +70,8 @@ export default async (
   try {
     await command.onCommand(interaction);
   } catch (error) {
+    console.log(error);
+    
     interaction.editReply({
       embeds: [
         new EmbedBuilder()

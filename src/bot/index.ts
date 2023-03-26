@@ -33,6 +33,8 @@ const DiscordBot = class Bot extends Client {
   events: { [name: string]: any } = {};
   util: { [name: string]: any } = {};
 
+  userIdCache: { [username: string]: number } = {};
+
   constructor(NECos: NECos) {
     super({
       intents: [
