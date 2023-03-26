@@ -13,7 +13,7 @@ import Noblox, { PlayerInfo } from "noblox.js";
 
 const { getBlurb } = Noblox;
 
-export default class VerifyNewSubcommand extends BaseCommand {
+export default class VerifyLinkSubcommand extends BaseCommand {
   name = "link";
   description = "Allows users to link or re-link their Roblox account.";
 

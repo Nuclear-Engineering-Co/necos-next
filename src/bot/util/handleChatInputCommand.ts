@@ -1,6 +1,8 @@
 import type { Bot } from "../../necos.js";
-import { ChatInputCommandInteraction, Colors, EmbedBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Collection, Colors, EmbedBuilder } from "discord.js";
 import BaseCommand from "./command.js";
+
+const cooldownData = new Collection<string, Collection<string, number>>();
 
 export default async (
   bot: Bot,
@@ -10,6 +12,7 @@ export default async (
 
   const commandName = interaction.commandName;
   const subcommandName = interaction.options.getSubcommand(false);
+  const member = interaction.member;
 
   let command: BaseCommand | undefined = undefined;
 
@@ -66,6 +69,13 @@ export default async (
       ],
     });
   }
+
+  // if (command.cooldown) {
+  //   const userCooldownData = cooldownData.get(member.id) || new Collection<string, number>();
+  //   cooldownData.set(member.id, userCooldownData);
+
+  //   const lastExecute = userCooldownData.get(command.name) || 0;
+  // }
 
   try {
     await command.onCommand(interaction);

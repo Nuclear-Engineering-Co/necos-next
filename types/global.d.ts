@@ -40,3 +40,13 @@ declare type VerificationRoleBind = {
     created_at: Date
     updated_at: Date
 }
+
+declare type RoleBindType = "group" | "gamepass" | "user"
+
+declare type RoleData = {
+    type: RoleBindType
+    groupId?: number
+    rankNumber?: number
+    gamepassId?: number
+    userId?: number
+}
