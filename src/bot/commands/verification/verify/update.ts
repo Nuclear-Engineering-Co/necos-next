@@ -1,5 +1,6 @@
 import BaseCommand from "../../../util/command.js";
 import { ChatInputCommandInteraction, Colors, EmbedBuilder } from "discord.js";
+import fetch from "node-fetch";
 import Noblox from "noblox.js";
 
 const { getRankInGroup } = Noblox;
@@ -91,6 +92,25 @@ export default class VerifyUpdateCommand extends BaseCommand {
           }
 
           shouldHaveRole = rankInGroup >= rankNumber;
+          break;
+        case "gamepass":
+          const gamepassId = roleData.gamepassId;
+          let userOwnsGamepass: any = false;
+
+          if (!gamepassId) {
+            errors.push(`Role bind ${roleBind.id} is missing a required property for bind type GAMEPASS. Please contact a guild administrator.`)
+            break;
+          }
+
+          try {
+            userOwnsGamepass = await fetch(`https://inventory.roblox.com/v1/users/62097945/items/1/${gamepassId}/is-owned`)
+            .then(res => res.json())
+          } catch (error) {
+            errors.push(`An error occurred whilst fetching ${user.username}'s ownership of gamepass ${gamepassId}. ${error}`)
+            break;
+          }
+
+          shouldHaveRole = userOwnsGamepass;
       }
       
       if (role && !shouldHaveRole) {

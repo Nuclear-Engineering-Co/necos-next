@@ -9,27 +9,21 @@ import {
   SlashCommandRoleOption,
 } from "discord.js";
 
-import Noblox, { Role } from "noblox.js";
-const { getRole } = Noblox;
+import fetch from "node-fetch";
 
 export default class BindGroupSubcommand extends BaseCommand {
-  name = "group";
-  description = "Allows guild managers to bind group roles to guild roles.";
+  name = "gamepass";
+  description = "Allows guild managers to unbind gamepasses from guild roles.";
 
   options = [
     new SlashCommandRoleOption()
       .setName("role")
-      .setDescription("The guild role to bind to.")
+      .setDescription("The guild role to unbind from.")
       .setRequired(true),
 
     new SlashCommandNumberOption()
-      .setName("groupid")
-      .setDescription("The group Id of the Roblox group to bind to.")
-      .setRequired(true),
-
-    new SlashCommandNumberOption()
-      .setName("rank")
-      .setDescription("The numerical rank number to bind to.")
+      .setName("gamepass")
+      .setDescription("The Id of the gamepass.")
       .setRequired(true),
   ];
 
@@ -37,42 +31,11 @@ export default class BindGroupSubcommand extends BaseCommand {
     const options = interaction.options;
 
     const role = options.getRole("role", true);
-    const groupId = options.getNumber("groupid", true);
-    const rankNumber = options.getNumber("rank", true);
-
-    let apiRoleData: Role | undefined = undefined;
-
-    try {
-      apiRoleData = await getRole(groupId, rankNumber);
-    } catch (error) {
-      apiRoleData = {
-        name: "Unknown",
-        memberCount: -1,
-        rank: -1,
-        id: -1,
-      };
-
-      console.log(error);
-      console.log(`Role fetch error matching interaction ${interaction.id}.`);
-    }
-
-    if (!apiRoleData || apiRoleData.id == -1) {
-      return await interaction.editReply({
-        embeds: [
-          new EmbedBuilder()
-            .setTitle("Rolebind failed")
-            .setDescription(
-              `No role was found at rank ${rankNumber} for group ${groupId}, or an error occurred.`
-            )
-            .setColor(Colors.Red),
-        ],
-      });
-    }
+    const gamepassId = options.getNumber("gamepass", true);
 
     const roleData = {
-      type: "group",
-      groupId: groupId,
-      rankNumber: rankNumber,
+      type: "gamepass",
+      gamepassId: gamepassId
     };
 
     const existingRole = await this.database<VerificationRoleBind>(
@@ -86,13 +49,13 @@ export default class BindGroupSubcommand extends BaseCommand {
       })
       .first();
 
-    if (existingRole) {
+    if (!existingRole) {
       return await interaction.editReply({
         embeds: [
           new EmbedBuilder()
-            .setTitle("Rolebind failed to create")
+            .setTitle("Rolebind failed to delete")
             .setDescription(
-              `A group rolebind for <@&${role.id}> on group ${groupId} at rank ${rankNumber} already exists.`
+              `A gamepass rolebind for <@&${role.id}> for gamepass ${gamepassId} was not found.`
             )
             .setColor(Colors.Red),
         ],
@@ -100,7 +63,8 @@ export default class BindGroupSubcommand extends BaseCommand {
     }
 
     this.database<VerificationRoleBind>("verification_binds")
-      .insert({
+      .delete("*")
+      .where({
         guild_id: interaction.guild.id,
         role_id: role.id,
         role_data: JSON.stringify(roleData),
@@ -109,9 +73,9 @@ export default class BindGroupSubcommand extends BaseCommand {
         await interaction.editReply({
           embeds: [
             new EmbedBuilder()
-              .setTitle("Rolebind created")
+              .setTitle("Rolebind deleted")
               .setDescription(
-                `Successfully created a group rolebind for <@&${role.id}> on group ${groupId} at rank ${rankNumber}.`
+                `Successfully deleted a gamepass rolebind for <@&${role.id}> for gamepass ${gamepassId}.`
               )
               .setColor(Colors.Green),
           ],
@@ -123,7 +87,7 @@ export default class BindGroupSubcommand extends BaseCommand {
             new EmbedBuilder()
               .setTitle("Rolebind failed to create")
               .setDescription(
-                `An unexpected error occurred whilst attempting to create a role bind. ${error}`
+                `An unexpected error occurred whilst attempting to delete a role bind. ${error}`
               )
               .setColor(Colors.Red),
           ],
