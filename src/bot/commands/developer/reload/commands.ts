@@ -1,7 +1,10 @@
 import BaseCommand from "../../../util/command.js";
-import { Bot } from "../../../../necos.js";
-import { ChatInputCommandInteraction, EmbedBuilder, Colors, SlashCommandBooleanOption } from "discord.js";
-import { config as parseEnv } from "dotenv";
+import {
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  Colors,
+  SlashCommandBooleanOption,
+} from "discord.js";
 
 export default class ReloadEverythingSubcommand extends BaseCommand {
   name = "commands";
@@ -11,7 +14,7 @@ export default class ReloadEverythingSubcommand extends BaseCommand {
     new SlashCommandBooleanOption()
       .setName("push")
       .setDescription("Pushes the commands to the Discord API.")
-      .setRequired(false)
+      .setRequired(false),
   ];
 
   developer = true;

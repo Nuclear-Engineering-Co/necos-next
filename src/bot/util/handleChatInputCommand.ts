@@ -1,5 +1,10 @@
 import type { Bot } from "../../necos.js";
-import { ChatInputCommandInteraction, Collection, Colors, EmbedBuilder } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  Collection,
+  Colors,
+  EmbedBuilder,
+} from "discord.js";
 import BaseCommand from "./command.js";
 
 const cooldownData = new Collection<string, Collection<string, number>>();
@@ -81,7 +86,7 @@ export default async (
     await command.onCommand(interaction);
   } catch (error) {
     console.log(error);
-    
+
     interaction.editReply({
       embeds: [
         new EmbedBuilder()

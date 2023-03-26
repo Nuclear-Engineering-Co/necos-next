@@ -1,11 +1,11 @@
 import BaseCommand from "../../../util/command.js";
-import { Bot } from "../../../../necos.js";
 import { ChatInputCommandInteraction, EmbedBuilder, Colors } from "discord.js";
 import { config as parseEnv } from "dotenv";
 
 export default class ReloadEverythingSubcommand extends BaseCommand {
   name = "environment";
-  description = "(DEVELOPER ONLY) Reloads the application environment variables.";
+  description =
+    "(DEVELOPER ONLY) Reloads the application environment variables.";
 
   developer = true;
 
@@ -20,7 +20,9 @@ export default class ReloadEverythingSubcommand extends BaseCommand {
         embeds: [
           new EmbedBuilder()
             .setTitle("Environment reloaded")
-            .setDescription(`The application environment has successfully been reloaded.`)
+            .setDescription(
+              `The application environment has successfully been reloaded.`
+            )
             .setColor(Colors.Green),
         ],
       });
@@ -29,7 +31,9 @@ export default class ReloadEverythingSubcommand extends BaseCommand {
         embeds: [
           new EmbedBuilder()
             .setTitle("Component Reload failed")
-            .setDescription(`The application environment failed to reload. ${error}`)
+            .setDescription(
+              `The application environment failed to reload. ${error}`
+            )
             .setColor(Colors.Red),
         ],
       });

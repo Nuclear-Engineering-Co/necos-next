@@ -36,11 +36,14 @@ export default class BindGroupSubcommand extends BaseCommand {
     let gamepassData = undefined;
 
     try {
-      gamepassData =  fetch(`https://apis.roblox.com/game-passes/v1/game-passes/${gamepassId}/product-info`)
-      .then(res => res.json())
+      gamepassData = fetch(
+        `https://apis.roblox.com/game-passes/v1/game-passes/${gamepassId}/product-info`
+      ).then((res) => res.json());
     } catch (error) {
       console.log(error);
-      console.log(`Gamepass fetch error matching interaction ${interaction.id}.`);
+      console.log(
+        `Gamepass fetch error matching interaction ${interaction.id}.`
+      );
     }
 
     if (!gamepassData) {
@@ -58,7 +61,7 @@ export default class BindGroupSubcommand extends BaseCommand {
 
     const roleData = {
       type: "gamepass",
-      gamepassId: gamepassId
+      gamepassId: gamepassId,
     };
 
     const existingRole = await this.database<VerificationRoleBind>(

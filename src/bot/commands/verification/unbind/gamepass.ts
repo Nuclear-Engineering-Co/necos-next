@@ -9,8 +9,6 @@ import {
   SlashCommandRoleOption,
 } from "discord.js";
 
-import fetch from "node-fetch";
-
 export default class BindGroupSubcommand extends BaseCommand {
   name = "gamepass";
   description = "Allows guild managers to unbind gamepasses from guild roles.";
@@ -35,7 +33,7 @@ export default class BindGroupSubcommand extends BaseCommand {
 
     const roleData = {
       type: "gamepass",
-      gamepassId: gamepassId
+      gamepassId: gamepassId,
     };
 
     const existingRole = await this.database<VerificationRoleBind>(

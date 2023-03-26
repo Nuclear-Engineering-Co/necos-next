@@ -17,7 +17,7 @@ const fullPath = dirname(import.meta.url).substring(7);
 const API = class API {
   NECos: NECos;
   server = express();
-  environment: DotenvParseOutput = {}
+  environment: DotenvParseOutput = {};
 
   constructor(NECos: NECos) {
     this.NECos = NECos;
@@ -25,8 +25,12 @@ const API = class API {
 
     NECos.log(LogLevel.INFO, "Beginning REST API initialization.");
 
-    this.server.get('/', (req, res) => {
-      res.json({ success: true, status: `${this.environment.APP_NAME} REST API online and ready.`, version: "1.0.0" });
+    this.server.get("/", (req, res) => {
+      res.json({
+        success: true,
+        status: `${this.environment.APP_NAME} REST API online and ready.`,
+        version: "1.0.0",
+      });
     });
 
     this.server.listen(this.environment.API_PORT);

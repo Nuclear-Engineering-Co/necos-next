@@ -1,7 +1,10 @@
 import BaseCommand from "../../util/command.js";
-import { Bot } from "../../../necos.js";
-import { ChatInputCommandInteraction, EmbedBuilder, Colors, SlashCommandStringOption } from "discord.js";
-import { config as parseEnv } from "dotenv";
+import {
+  ChatInputCommandInteraction,
+  EmbedBuilder,
+  Colors,
+  SlashCommandStringOption,
+} from "discord.js";
 
 export default class ReloadEverythingSubcommand extends BaseCommand {
   name = "eval";
@@ -11,7 +14,7 @@ export default class ReloadEverythingSubcommand extends BaseCommand {
     new SlashCommandStringOption()
       .setName("code")
       .setDescription("The code to execute")
-      .setRequired(true)
+      .setRequired(true),
   ];
 
   developer = true;
@@ -21,27 +24,27 @@ export default class ReloadEverythingSubcommand extends BaseCommand {
 
     try {
       const evalReturn = eval(code);
-      const cleanString = await this.bot.util.cleanString(evalReturn)
+      const cleanString = await this.bot.util.cleanString(evalReturn);
 
       await interaction.editReply({
         content: "Success!",
         files: [
           {
             attachment: Buffer.from(cleanString),
-            name: "result.js"
-          }
-        ]
-      })
+            name: "result.js",
+          },
+        ],
+      });
     } catch (error) {
       await interaction.editReply({
         content: "Code failed to execute",
         files: [
           {
             attachment: Buffer.from(await this.bot.util.cleanString(error)),
-            name: "result.js"
-          }
-        ]
-      })
+            name: "result.js",
+          },
+        ],
+      });
     }
   };
 }

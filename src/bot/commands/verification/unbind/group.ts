@@ -9,8 +9,7 @@ import {
   SlashCommandRoleOption,
 } from "discord.js";
 
-import Noblox, { Role } from "noblox.js";
-const { getRole } = Noblox;
+import Noblox from "noblox.js";
 
 export default class BindGroupSubcommand extends BaseCommand {
   name = "group";

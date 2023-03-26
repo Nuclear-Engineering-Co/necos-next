@@ -1,6 +1,10 @@
 import BaseCommand from "../../util/command.js";
-import { Bot } from "../../../necos.js";
-import { ChatInputCommandInteraction, Colors, EmbedBuilder, PermissionsBitField } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  Colors,
+  EmbedBuilder,
+  PermissionsBitField,
+} from "discord.js";
 
 export default class ReverifyCommand extends BaseCommand {
   name = "binds";
@@ -10,9 +14,11 @@ export default class ReverifyCommand extends BaseCommand {
 
   onCommand = async (interaction: ChatInputCommandInteraction<"cached">) => {
     const guild = interaction.guild;
-    const bindData = await this.database<VerificationRoleBind>("verification_binds")
-    .select("*")
-    .where("guild_id", guild.id);
+    const bindData = await this.database<VerificationRoleBind>(
+      "verification_binds"
+    )
+      .select("*")
+      .where("guild_id", guild.id);
 
     const binds: Array<string> = [];
 
@@ -22,22 +28,24 @@ export default class ReverifyCommand extends BaseCommand {
 
       for (const index in roleData) {
         const value = roleData[index];
-        
-        roleDataString = roleDataString + `${index}: ${value}\n  `
+
+        roleDataString = roleDataString + `${index}: ${value}\n  `;
       }
 
       binds.push(`• ${bind.id}
           Role: <@&${bind.role_id}>,
-          ${roleDataString}`)
+          ${roleDataString}`);
     }
 
     await interaction.editReply({
       embeds: [
         new EmbedBuilder()
-          .setTitle(`${this.bot.environment.APP_NAME} Rolebinds for ${guild.name}`)
+          .setTitle(
+            `${this.bot.environment.APP_NAME} Rolebinds for ${guild.name}`
+          )
           .setDescription(binds.join("\n"))
-          .setColor(Colors.Green)
-      ]
-    })
-  }
+          .setColor(Colors.Green),
+      ],
+    });
+  };
 }

@@ -9,7 +9,7 @@ import {
   ButtonStyle,
   ButtonInteraction,
 } from "discord.js";
-import Noblox, { PlayerInfo } from "noblox.js";
+import Noblox from "noblox.js";
 
 const { getBlurb } = Noblox;
 
@@ -83,7 +83,8 @@ export default class VerifyLinkSubcommand extends BaseCommand {
 
     username = username.toString();
 
-    const [profileInfo, userId] = await this.bot.util.getProfileInfo(username)
+    const [profileInfo, userId] = await this.bot.util
+      .getProfileInfo(username)
       .catch(async (error: string) => {
         return await interaction.editReply({
           embeds: [
@@ -176,7 +177,7 @@ export default class VerifyLinkSubcommand extends BaseCommand {
           await component.deferUpdate();
 
           try {
-            await usernameReply?.delete()
+            await usernameReply?.delete();
           } catch (error) {}
 
           const buttonId = component.customId;
@@ -245,56 +246,63 @@ export default class VerifyLinkSubcommand extends BaseCommand {
 
       let verificationCode = verificationCodeWords.join(" ");
 
-      const codeAddedConfirmCollector = channel.createMessageComponentCollector({
-        filter: (interaction) => interaction.member.id === member.id,
-        time: 120_000,
-        max: 1
-      })
+      const codeAddedConfirmCollector = channel.createMessageComponentCollector(
+        {
+          filter: (interaction) => interaction.member.id === member.id,
+          time: 120_000,
+          max: 1,
+        }
+      );
 
       const codeMessage = await channel.send({
-        content: `<@${member.id}>, ${codeAttempts > 0 && "I was unable to find the code in the user's blurb / bio," || ""} please enter the following code in your roblox blurb / bio. When you are done, press "Done". \`${verificationCode}\`
+        content: `<@${member.id}>, ${
+          (codeAttempts > 0 &&
+            "I was unable to find the code in the user's blurb / bio,") ||
+          ""
+        } please enter the following code in your roblox blurb / bio. When you are done, press "Done". \`${verificationCode}\`
         **Times out in 120 seconds.**`,
         components: [
-          new ActionRowBuilder<ButtonBuilder>()
-            .addComponents(
-              new ButtonBuilder()
-                .setLabel("Done")
-                .setCustomId("true")
-                .setStyle(ButtonStyle.Success),
-  
-              new ButtonBuilder()
-                .setLabel("Cancel")
-                .setCustomId("false")
-                .setStyle(ButtonStyle.Danger),
-            )
-        ]
-      })
-  
-      codeAddedConfirmed = await new Promise<boolean>((resolve, reject) => {
-        codeAddedConfirmCollector.on('collect', async (collected: ButtonInteraction) => {
-          const codeAdded = collected.customId === "true"
+          new ActionRowBuilder<ButtonBuilder>().addComponents(
+            new ButtonBuilder()
+              .setLabel("Done")
+              .setCustomId("true")
+              .setStyle(ButtonStyle.Success),
 
-          try {
-            await codeMessage.delete();
-          } catch (error) {}
-          codeAddedConfirmCollector.stop();
-  
-          if (codeAdded) {
-            const blurb = await getBlurb(userId);
-  
-            resolve(blurb.includes(verificationCode));
-          } else {
-            reject("Prompt cancelled.")
+            new ButtonBuilder()
+              .setLabel("Cancel")
+              .setCustomId("false")
+              .setStyle(ButtonStyle.Danger)
+          ),
+        ],
+      });
+
+      codeAddedConfirmed = await new Promise<boolean>((resolve, reject) => {
+        codeAddedConfirmCollector.on(
+          "collect",
+          async (collected: ButtonInteraction) => {
+            const codeAdded = collected.customId === "true";
+
+            try {
+              await codeMessage.delete();
+            } catch (error) {}
+            codeAddedConfirmCollector.stop();
+
+            if (codeAdded) {
+              const blurb = await getBlurb(userId);
+
+              resolve(blurb.includes(verificationCode));
+            } else {
+              reject("Prompt cancelled.");
+            }
           }
-        })
-  
-        codeAddedConfirmCollector.on('end', (collected) => {
+        );
+
+        codeAddedConfirmCollector.on("end", (collected) => {
           if (collected.size == 0) {
-            reject("Prompt timed out.")
+            reject("Prompt timed out.");
           }
-        })
-      })
-      .catch(async (response: string) => {
+        });
+      }).catch(async (response: string) => {
         codeAddedCancelled = true;
 
         await interaction.editReply({
@@ -309,11 +317,11 @@ export default class VerifyLinkSubcommand extends BaseCommand {
               .setFooter({
                 text: this.bot.environment.APP_NAME,
               }),
-          ]
-        })
+          ],
+        });
 
         return false;
-      })
+      });
 
       codeAttempts++;
     }
@@ -327,35 +335,38 @@ export default class VerifyLinkSubcommand extends BaseCommand {
         embeds: [
           new EmbedBuilder()
             .setTitle(`${this.bot.environment.APP_NAME} Verification`)
-            .setDescription(`Verification code failed to validate after three attempts. Please try again later.`)
+            .setDescription(
+              `Verification code failed to validate after three attempts. Please try again later.`
+            )
             .setColor(Colors.Red)
             .setTimestamp()
             .setFooter({
               text: this.bot.environment.APP_NAME,
             }),
-        ]
-      })
+        ],
+      });
     }
 
     try {
-      const existingUser = await this.database<User>("users").select("*")
-      .where("user_id", userId)
-      .first();
+      const existingUser = await this.database<User>("users")
+        .select("*")
+        .where("user_id", userId)
+        .first();
 
       if (existingUser) {
         await this.database<User>("users").update({
           username: username,
           user_id: userId,
           discord_id: member.id,
-          updated_at: this.database.fn.now(6)
-        })
+          updated_at: this.database.fn.now(6),
+        });
       } else {
         console.log("creating");
         await this.database<User>("users").insert({
           username: username,
           user_id: userId,
           discord_id: member.id,
-        })
+        });
       }
     } catch (error) {
       console.log(error);
@@ -366,14 +377,16 @@ export default class VerifyLinkSubcommand extends BaseCommand {
         embeds: [
           new EmbedBuilder()
             .setTitle(`${this.bot.environment.APP_NAME} Verification`)
-            .setDescription(`An error occurred whilst creating userdata in the database. ${error}`)
+            .setDescription(
+              `An error occurred whilst creating userdata in the database. ${error}`
+            )
             .setColor(Colors.Red)
             .setTimestamp()
             .setFooter({
               text: this.bot.environment.APP_NAME,
             }),
-        ]
-      })
+        ],
+      });
     }
 
     await interaction.editReply({
@@ -382,13 +395,15 @@ export default class VerifyLinkSubcommand extends BaseCommand {
       embeds: [
         new EmbedBuilder()
           .setTitle(`${this.bot.environment.APP_NAME} Verification`)
-          .setDescription("Discord account verification was successful! Please run \`/verify update\` to obtain roles.")
+          .setDescription(
+            "Discord account verification was successful! Please run `/verify update` to obtain roles."
+          )
           .setColor(Colors.Green)
           .setTimestamp()
           .setFooter({
             text: this.bot.environment.APP_NAME,
           }),
-      ]
-    })
+      ],
+    });
   };
 }

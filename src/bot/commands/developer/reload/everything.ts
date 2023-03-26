@@ -1,5 +1,4 @@
 import BaseCommand from "../../../util/command.js";
-import { Bot } from "../../../../necos.js";
 import { ChatInputCommandInteraction, EmbedBuilder, Colors } from "discord.js";
 import { config as parseEnv } from "dotenv";
 
