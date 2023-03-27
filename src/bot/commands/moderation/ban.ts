@@ -116,7 +116,7 @@ export default class BanCommand extends BaseCommand {
 
     try {
       await member.ban({
-        reason: reason
+        reason: reason,
       });
 
       await interaction.editReply({

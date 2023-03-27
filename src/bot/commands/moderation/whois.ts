@@ -1,7 +1,13 @@
 /// <reference path="../../../../types/global.d.ts" />
 
 import BaseCommand from "../../util/command.js";
-import { ChatInputCommandInteraction, Colors, EmbedBuilder, PermissionsBitField, SlashCommandUserOption } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  Colors,
+  EmbedBuilder,
+  PermissionsBitField,
+  SlashCommandUserOption,
+} from "discord.js";
 
 export default class WhoisCommand extends BaseCommand {
   name = "whois";
@@ -16,33 +22,37 @@ export default class WhoisCommand extends BaseCommand {
   ];
 
   onCommand = async (interaction: ChatInputCommandInteraction<"cached">) => {
-    const guildMember = interaction.options.getMember("user")
+    const guildMember = interaction.options.getMember("user");
 
     if (!guildMember) {
       return await interaction.editReply({
         embeds: [
           new EmbedBuilder()
             .setTitle("Whois Lookup failed")
-            .setDescription(`No member was able to be found. Please ensure you have entered a valid guild member.`)
-            .setColor(Colors.Red)
-        ]
-      })
+            .setDescription(
+              `No member was able to be found. Please ensure you have entered a valid guild member.`
+            )
+            .setColor(Colors.Red),
+        ],
+      });
     }
 
     const user = await this.database<User>("users")
-    .select("*")
-    .where("discord_id", guildMember.id)
-    .first();
+      .select("*")
+      .where("discord_id", guildMember.id)
+      .first();
 
     if (!user) {
       return await interaction.editReply({
         embeds: [
           new EmbedBuilder()
             .setTitle("Whois Lookup failed")
-            .setDescription(`<@${guildMember.id}> has no ${this.bot.environment.APP_NAME} data.`)
-            .setColor(Colors.Red)
-        ]
-      })
+            .setDescription(
+              `<@${guildMember.id}> has no ${this.bot.environment.APP_NAME} data.`
+            )
+            .setColor(Colors.Red),
+        ],
+      });
     }
 
     await interaction.editReply({
@@ -55,34 +65,34 @@ export default class WhoisCommand extends BaseCommand {
             {
               name: "Username",
               value: user.username,
-              inline: true
+              inline: true,
             },
 
             {
               name: "User Id",
               value: user.user_id,
-              inline: true
+              inline: true,
             },
 
             {
               name: `${this.bot.environment.APP_NAME} Role`,
               value: user.role,
-              inline: true
+              inline: true,
             },
 
             {
               name: "Verified At",
               value: user.created_at.toString(),
-              inline: true
+              inline: true,
             },
 
             {
               name: "Verification Id",
               value: user.id.toString(),
-              inline: true
+              inline: true,
             }
-          )
-      ]
-    })
-  }
+          ),
+      ],
+    });
+  };
 }

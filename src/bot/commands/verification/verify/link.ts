@@ -290,6 +290,7 @@ export default class VerifyLinkSubcommand extends BaseCommand {
             if (codeAdded) {
               const blurb = await getBlurb(userId);
 
+              //resolve(true);
               resolve(blurb.includes(verificationCode));
             } else {
               reject("Prompt cancelled.");
