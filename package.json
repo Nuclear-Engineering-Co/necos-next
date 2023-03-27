@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@types/express": "^4.17.17",
-    "@types/node": "^18.15.3",
+    "@types/node": "^18.15.10",
     "bluebird": "^3.7.2",
     "chalk": "^5.2.0",
     "discord.js": "^14.8.0",
