@@ -4,9 +4,9 @@ PACKAGE_VERSION=$(cat "$SCRIPT_DIR/../../package.json" \
   | grep version \
   | head -1 \
   | awk -F: '{ print $2 }' \
-  | sed 's/[",]//g')
+  | sed 's/[", ]//g')
 
-echo "NECos Package Version$PACKAGE_VERSION" 
+echo "NECos Package Version $PACKAGE_VERSION" 
 echo "NECos Local Repository Version" `git rev-parse HEAD | cut -c1-7`
 echo ""
 echo "Usage: ./necos [command] [OPTIONS]"

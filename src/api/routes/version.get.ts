@@ -1,8 +1,9 @@
+import { API } from "../../necos.js";
 import { Request, Response } from "express";
 
-export default async (request: Request, response: Response) => {
+export default async (api: API, request: Request, response: Response) => {
   return response.send({
     success: true,
-    version: "2.0.0",
+    version: process.env.npm_package_version,
   });
 };

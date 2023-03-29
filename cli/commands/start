@@ -12,13 +12,13 @@ if [[ "${FLAGS[*]}" =~ "--dev" ]] || [[ "${FLAGS[*]}" =~ "--ci" ]]; then
     return
   fi
 
-  npx ts-node-esm "$DEVFILE" -- $FLAGS
+  npx ts-node-esm "$DEVFILE" ${FLAGS[@]}
 else
   if [ ! -e "$PRODFILE" ]; then
     echo "NECos build not found in project root! Did you run ./necos build?"
   else
     export NODE_ENV=production
 
-    node "$PRODFILE" -- $FLAGS
+    node "$PRODFILE" -- ${FLAGS[@]}
   fi
 fi

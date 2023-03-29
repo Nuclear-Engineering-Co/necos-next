@@ -1,15 +1,21 @@
+#!/bin/bash
+
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 FLAGS=()
-ARGS=$@
+ARGS=($@)
 CMDFILE=""
 
 for var in ${ARGS[@]}
 do
     if [[ $var == -* ]]
     then
-        FLAGS+=($var)
-        ARGS=("${ARGS[@]/$var}")
+        FLAGS+=("$var")
     fi
+done
+
+for arg in ${FLAGS[@]}
+do
+    unset ARGS[arg]
 done
 
 # trim args

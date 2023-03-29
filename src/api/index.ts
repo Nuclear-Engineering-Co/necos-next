@@ -10,6 +10,7 @@ import { NECos, LogLevel } from "../necos.js";
 import { DotenvParseOutput } from "dotenv";
 import express from "express";
 import { Knex } from "knex";
+import { watch } from "chokidar";
 
 // Constants
 const fullPath = dirname(import.meta.url).substring(7);
@@ -80,7 +81,14 @@ const API = class API {
         }
       };
 
-      loadRoutes("routes");
+      await loadRoutes("routes");
+
+      // Watch for file changes (if in development)
+      if (process.env.NODE_ENV != "production") {
+        watch(`${fullPath}/routes`).on('change', (file, stats) => {
+          
+        })
+      }
 
       // Listen for requests
       await this.server.listen(this.environment.API_PORT);

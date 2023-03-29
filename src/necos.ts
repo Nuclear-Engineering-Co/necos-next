@@ -25,6 +25,7 @@ export const LogLevel = {
 // Class
 const NECos = class NECos {
   environment = parseEnv().parsed || {};
+  debug = false;
   start_time = (Date.now() / 1000).toFixed(0);
 
   database = knex({
@@ -44,7 +45,7 @@ const NECos = class NECos {
   });
 
   log = (level: string, ...output: string[]) => {
-    if (level == LogLevel.DEBUG && this.environment.APP_DEBUG != "true") return;
+    if (level == LogLevel.DEBUG && ! this.debug) return;
     console.log(level, ...output);
   };
 
@@ -67,6 +68,7 @@ const NECos = class NECos {
   };
 
   constructor() {
+    this.debug = process.argv.includes("--debug") || this.environment.APP_DEBUG == "true";
     this.database.migrate.latest();
     this.environment.APP_DEVELOPERS = JSON.parse(
       this.environment.APP_DEVELOPERS
