@@ -85,9 +85,7 @@ const API = class API {
 
       // Watch for file changes (if in development)
       if (process.env.NODE_ENV != "production") {
-        watch(`${fullPath}/routes`).on('change', (file, stats) => {
-          
-        })
+        watch(`${fullPath}/routes`).on("change", (file, stats) => {});
       }
 
       // Listen for requests
