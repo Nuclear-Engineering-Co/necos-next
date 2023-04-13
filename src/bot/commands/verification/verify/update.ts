@@ -65,6 +65,7 @@ export default class VerifyUpdateCommand extends BaseCommand {
 
     const errors = [];
     const rankCache: { [groupId: number]: number } = {};
+    const processedRoles: Array<string> = [];
     const addedRoles: Array<string> = [];
     const removedRoles: Array<string> = [];
 
@@ -75,6 +76,8 @@ export default class VerifyUpdateCommand extends BaseCommand {
     }
 
     for (const roleBind of roleBinds) {
+      if (processedRoles.includes(roleBind.role_id)) continue;
+
       let role = await member.roles.resolve(roleBind.role_id);
       const roleData: RoleData = JSON.parse(roleBind.role_data);
       let shouldHaveRole = false;
@@ -136,6 +139,7 @@ export default class VerifyUpdateCommand extends BaseCommand {
         try {
           await member.roles.remove(role);
           removedRoles.push(`<@&${role.id}>`);
+          processedRoles.push(role.id);
         } catch (error) {
           errors.push(
             `An error occurred whilst removing role <@&${role.id}> from <@${member.id}>. ${error}`
@@ -154,6 +158,7 @@ export default class VerifyUpdateCommand extends BaseCommand {
         try {
           await member.roles.add(role);
           addedRoles.push(`<@&${role.id}>`);
+          processedRoles.push(role.id);
         } catch (error) {
           errors.push(
             `An error occurred whilst removing role <@&${role.id}> from <@${member.id}>. ${error}`

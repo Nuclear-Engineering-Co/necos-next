@@ -4,6 +4,7 @@ import {
   Collection,
   Colors,
   EmbedBuilder,
+  PermissionsBitField,
 } from "discord.js";
 import BaseCommand from "./command.js";
 
@@ -67,6 +68,25 @@ export default async (
           .setTitle("Command Execution failed")
           .setDescription(
             `Only ${bot.environment.APP_NAME} bot developers can execute \`${commandName}\`.`
+          )
+          .setColor(Colors.Red)
+          .setFooter({ text: bot.environment.APP_NAME })
+          .setTimestamp(),
+      ],
+    });
+  }
+
+  if (
+    command.defaultMemberPermissions &&
+    typeof command.defaultMemberPermissions == "bigint" &&
+    !member.permissions.has(PermissionsBitField.resolve(command.defaultMemberPermissions))
+  ) {
+    return interaction.editReply({
+      embeds: [
+        new EmbedBuilder()
+          .setTitle("Command Execution failed")
+          .setDescription(
+            `Insufficient permissions.`
           )
           .setColor(Colors.Red)
           .setFooter({ text: bot.environment.APP_NAME })
