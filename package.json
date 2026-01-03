@@ -18,10 +18,10 @@
     "chokidar": "^3.5.3",
     "discord.js": "^14.8.0",
     "dotenv": "^16.0.3",
-    "express": "^4.20.0",
+    "express": "^4.22.0",
     "knex": "^2.4.2",
     "mysql2": "^3.1.2",
-    "noblox.js": "^4.14.0",
+    "noblox.js": "^5.0.1",
     "node-fetch": "^3.3.1",
     "prettier": "^2.8.5",
     "ts-node": "^10.9.1"
